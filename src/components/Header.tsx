@@ -32,11 +32,11 @@ const Header = () => {
 
           {/* Desktop Name Display */}
           <ul className="hidden md:flex flex justify-center text-sm text-white gap-2">
-            <User2 size={20}/>
+            <User2 size={20} />
             <li><span> Admin</span></li>
           </ul>
 
-          
+
           {/* Logout Button */}
           <button className="hidden md:inline-block bg-indigo-50 text-sm text-black font-medium rounded-full px-5 py-2 hover:bg-indigo-100">
             Log Out
