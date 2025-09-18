@@ -1,15 +1,5 @@
-import { useState } from "react";
-import {
-    Database,
-    Mail,
-    MessageSquare,
-    ChevronDown,
-    Save,
-    X,
-    User,
-    Calendar,
-    Clock,
-} from "lucide-react";
+import { useEffect, useState } from "react";
+import { Database, Mail, MessageSquare, ChevronDown, Save, X } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import SettingCard from "./SettingCard";
@@ -37,6 +27,8 @@ const Dashboard = () => {
     const [dbPassword, setDbPassword] = useState("");
     const [dbName, setDbName] = useState("myapp_db");
 
+    const [databaseSettingList, setDatabaseSettingList] = useState<any[]>([]);
+
     // ---- Email Settings State --------------
     const [smtpHost, setSmtpHost] = useState("smtp.gmail.com");
     const [smtpPort, setSmtpPort] = useState("587");
@@ -49,6 +41,23 @@ const Dashboard = () => {
     const [fromNumber, setFromNumber] = useState("+1234567890");
     const [apiKey, setApiKey] = useState("");
     const [apiSecret, setApiSecret] = useState("");
+
+
+    useEffect(() => {
+        try {
+            const res = axios.get('http://localhost:8080/api/database/setting/get-all');
+            res.then((element) => {
+                console.log(element.data);
+
+                setDatabaseSettingList(element.data);
+            });
+
+        } catch (error) {
+            console.log("Error fetching database settings:", error);
+        }
+
+    }, [])
+
 
     const toggleSection = (section: keyof ExpandedSections) => {
         setExpandedSections((prev) => ({
@@ -98,7 +107,7 @@ const Dashboard = () => {
             // alert(error ?.response?.data?.message || "An error occurred");
             toast.error(error?.response?.data?.message || "An error occurred");
         }
-        
+
         //------------------------------------------------------------------------------------------
     };
 
@@ -383,7 +392,17 @@ const Dashboard = () => {
 
                         <div className="divide-y divide-gray-100 flex flex-col gap-4 p-4">
                             {/* Placeholder for saved settings or tickets */}
-                            <SettingCard />
+
+                            {databaseSettingList.map((setting) => (
+                                <SettingCard
+                                    key={setting.id}
+                                    databaseName={setting.databaseName}
+                                    username={setting.username}
+                                    host={setting.host}
+                                    port={setting.port}
+                                // password={setting.password} // Typically, you wouldn't display passwords
+                                />
+                            ))}
                         </div>
                     </div>
                 </div>

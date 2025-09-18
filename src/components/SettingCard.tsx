@@ -38,14 +38,14 @@ function SettingCard(props: any) {
                             <div className="flex items-center gap-2">
                                 <Server className="w-4 h-4 text-gray-600" />
                                 <h4 className="text-sm font-semibold text-gray-900">
-                                    Host Name: <span className="font-normal text-gray-700">{props.hostName || 'Not set'}</span>
+                                    Host Name: <span className="font-normal text-gray-700">{props.host || 'Not set'}</span>
                                 </h4>
                             </div>
 
                             <div className="flex items-center gap-2">
                                 <Wifi className="w-4 h-4 text-gray-600" />
                                 <h4 className="text-sm font-semibold text-gray-900">
-                                    Port Name: <span className="font-normal text-gray-700">{props.portName || 'Not set'}</span>
+                                    Port Name: <span className="font-normal text-gray-700">{props.port || 'Not set'}</span>
                                 </h4>
                             </div>
                         </div>
