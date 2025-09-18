@@ -6,13 +6,13 @@ function SettingCard(props: any) {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
 
-     const handleDelete = () => {
+    const handleDelete = () => {
         // Handle delete logic here
         console.log('Deleting database setting:', props.id);
         setShowDeleteModal(false);
         // You can add props.onDelete(props.id) here to pass data to parent component
     };
-    
+
     return (
         <>
             <div
@@ -153,7 +153,7 @@ function SettingCard(props: any) {
 
 
 
-             {/* Delete Confirmation Modal --------------------------------------------------------------------*/}
+            {/* Delete Confirmation Modal --------------------------------------------------------------------*/}
             {showDeleteModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-lg shadow-xl w-full max-w-sm">
@@ -161,11 +161,11 @@ function SettingCard(props: any) {
                             <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-100 rounded-full">
                                 <X className="w-6 h-6 text-red-600" />
                             </div>
-                            
+
                             <h2 className="text-lg font-semibold text-gray-900 text-center mb-2">
                                 Delete Database Setting
                             </h2>
-                            
+
                             <p className="text-gray-600 text-center mb-6">
                                 Are you sure you want to delete this database setting? This action cannot be undone.
                             </p>

@@ -1,16 +1,6 @@
 import React, { useState } from 'react'
-import {
-  LayoutDashboardIcon,
-  PlusCircleIcon,
-  TicketIcon,
-  InboxIcon,
-  UserIcon,
-  CheckIcon,
-  TagIcon,
-  Settings,
-  User,
-} from 'lucide-react'
-import { Link, useNavigate } from 'react-router-dom';
+import { Settings, User } from 'lucide-react'
+import { useNavigate } from 'react-router-dom';
 
 export function Sidebar() {
   const [activeItem, setActiveItem] = useState('Dashboard');
@@ -19,7 +9,6 @@ export function Sidebar() {
   const menuItems = [
     { id: 'Database Setting', icon: <Settings size={20} />, label: 'Application Settings' },
     { id: 'User Management', icon: <User size={20} />, label: 'User Management' },
-    // { id: 'SMS Setting', icon: <PlusCircleIcon size={20} />, label: 'SMS Setting' }
   ];
 
   const handleItemClick = (itemId: any) => {
@@ -33,7 +22,6 @@ export function Sidebar() {
       case 'SMS Setting': navigate('/admin/create-ticket');
         break;
     }
-
   };
 
 
