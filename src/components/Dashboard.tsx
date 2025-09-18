@@ -396,11 +396,11 @@ const Dashboard = () => {
                             {databaseSettingList.map((setting) => (
                                 <SettingCard
                                     key={setting.id}
+                                    id={setting.id}
                                     databaseName={setting.databaseName}
                                     username={setting.username}
                                     host={setting.host}
                                     port={setting.port}
-                                // password={setting.password} // Typically, you wouldn't display passwords
                                 />
                             ))}
                         </div>
