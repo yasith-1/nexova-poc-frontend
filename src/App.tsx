@@ -10,7 +10,7 @@ function App() {
     <>
       <Loader />
       <BrowserRouter>
-        <Toaster position="top-right" reverseOrder={false} />
+        <Toaster position="bottom-right" reverseOrder={false} />
         <Routes>
           <Route path='/dashboard/*' element={<MainAdminDashboardContainer />} />
           <Route path='/*' element={<MainAdminDashboardContainer />} />

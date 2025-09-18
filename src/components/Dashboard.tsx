@@ -20,40 +20,7 @@ type ExpandedSections = {
     sms: boolean;
 };
 
-type Ticket = {
-    id: string;
-    status: "Open" | "In Progress" | "Closed";
-    title: string;
-    description: string;
-    user: string;
-    date: string;
-    timeAgo: string;
-    priority: "High" | "Medium" | "Low";
-};
 
-// Dummy recent tickets
-const recentTickets: Ticket[] = [
-    {
-        id: "#T123",
-        status: "Open",
-        title: "Database connection error",
-        description: "The app cannot connect to the database.",
-        user: "John Doe",
-        date: "2025-09-12",
-        timeAgo: "2h ago",
-        priority: "High",
-    },
-    {
-        id: "#T124",
-        status: "In Progress",
-        title: "Email not sending",
-        description: "SMTP configuration is not working properly.",
-        user: "Jane Smith",
-        date: "2025-09-11",
-        timeAgo: "5h ago",
-        priority: "Medium",
-    },
-];
 
 const Dashboard = () => {
     const [expandedSections, setExpandedSections] = useState<ExpandedSections>({
@@ -156,6 +123,7 @@ const Dashboard = () => {
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-gray-50">
             <div className="max-w-7xl mx-auto space-y-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
                     {/* Settings (2/3 on desktop) */}
                     <div className="lg:col-span-2 space-y-6">
                         {/* ---------- Database Settings ---------- */}
@@ -177,14 +145,16 @@ const Dashboard = () => {
                             {expandedSections.database && (
                                 <div className="px-4 pb-4 border-t border-gray-100">
                                     <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700">Host</label>
+                                            <label className="block text-sm font-medium text-gray-700">Database Name</label>
                                             <input
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                value={dbHost}
-                                                onChange={(e: any) => setDbHost(e.target.value)}
+                                                value={dbName}
+                                                onChange={(e: any) => setDbName(e.target.value)}
                                             />
                                         </div>
+
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700">Username</label>
                                             <input
@@ -193,6 +163,16 @@ const Dashboard = () => {
                                                 onChange={(e: any) => setDbUsername(e.target.value)}
                                             />
                                         </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700">Host</label>
+                                            <input
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                                value={dbHost}
+                                                onChange={(e: any) => setDbHost(e.target.value)}
+                                            />
+                                        </div>
+
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700">Port</label>
                                             <input
@@ -211,14 +191,7 @@ const Dashboard = () => {
                                             />
                                         </div>
                                     </div>
-                                    <div className="mt-4">
-                                        <label className="block text-sm font-medium text-gray-700">Database Name</label>
-                                        <input
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                            value={dbName}
-                                            onChange={(e: any) => setDbName(e.target.value)}
-                                        />
-                                    </div>
+
                                     <div className="flex flex-col sm:flex-row gap-3 pt-6">
                                         <button
                                             onClick={() => handleSave("database")}
@@ -403,59 +376,9 @@ const Dashboard = () => {
                         <div className="px-4 sm:px-6 py-4 border-b border-gray-100">
                             <h3 className="text-lg font-semibold text-gray-900">Saved Settings</h3>
                         </div>
+
                         <div className="divide-y divide-gray-100 flex flex-col gap-4 p-4">
-                            {recentTickets.map((ticket, index) => (
-                                <div
-                                    key={index}
-                                    className="p-4 sm:p-6 bg-[#E8F1FF] hover:bg-gray-50 transition-colors rounded-2xl"
-                                >
-                                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center space-x-3 mb-2">
-                                                <span className="text-sm font-semibold text-blue-600">
-                                                    {ticket.id}
-                                                </span>
-                                                <span
-                                                    className={`px-2 py-1 text-xs font-medium rounded-full ${ticket.status === "Open"
-                                                        ? "bg-orange-100 text-orange-700 border border-orange-200"
-                                                        : ticket.status === "In Progress"
-                                                            ? "bg-blue-100 text-blue-700 border border-blue-200"
-                                                            : "bg-green-100 text-green-700 border border-green-200"
-                                                        }`}
-                                                >
-                                                    {ticket.status}
-                                                </span>
-                                            </div>
-                                            <h4 className="text-sm font-semibold text-gray-900 mb-1">
-                                                {ticket.title}
-                                            </h4>
-                                            <p className="text-sm text-gray-600 mb-3 line-clamp-1">
-                                                {ticket.description}
-                                            </p>
-                                            <div className="flex items-center space-x-1 text-xs text-gray-500">
-                                                <User className="w-3 h-3" />
-                                                <span>{ticket.user}</span>
-                                                <Calendar className="w-3 h-3 ml-3" />
-                                                <span>{ticket.date}</span>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center space-x-3 text-sm sm:text-base">
-                                            <Clock className="w-4 text-gray-500" />
-                                            <span>{ticket.timeAgo}</span>
-                                            <span
-                                                className={`px-2 py-1 text-xs sm:text-sm font-medium rounded border ${ticket.priority === "High"
-                                                    ? "text-red-600 bg-red-50 border-red-200"
-                                                    : ticket.priority === "Medium"
-                                                        ? "text-yellow-600 bg-yellow-50 border-yellow-200"
-                                                        : "text-green-600 bg-green-50 border-green-200"
-                                                    }`}
-                                            >
-                                                {ticket.priority}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                            {/* Placeholder for saved settings or tickets */}
                         </div>
                     </div>
                 </div>
