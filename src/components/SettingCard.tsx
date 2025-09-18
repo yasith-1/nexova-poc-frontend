@@ -1,5 +1,18 @@
+import { Database, Server, Wifi, X } from "lucide-react"
+import { useState } from "react";
 
 function SettingCard(props: any) {
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+
+     const handleDelete = () => {
+        // Handle delete logic here
+        console.log('Deleting database setting:', props.id);
+        setShowDeleteModal(false);
+        // You can add props.onDelete(props.id) here to pass data to parent component
+    };
+    
     return (
         <>
             <div
@@ -13,31 +26,168 @@ function SettingCard(props: any) {
                                 {props.id}
                             </span>
                         </div>
-                        <h4 className="text-sm font-semibold text-gray-900 mb-1">
-                            Database Name :
-                        </h4>
 
-                        <h4 className="text-sm font-semibold text-gray-900 mb-1">
-                            Host Name :
-                        </h4>
+                        <div className="space-y-2 mb-4">
+                            <div className="flex items-center gap-2">
+                                <Database className="w-4 h-4 text-gray-600" />
+                                <h4 className="text-sm font-semibold text-gray-900">
+                                    Database Name: <span className="font-normal text-gray-700">{props.databaseName || 'Not set'}</span>
+                                </h4>
+                            </div>
 
-                        <h4 className="text-sm font-semibold text-gray-900 mb-1">
-                            Port Name :
-                        </h4>
+                            <div className="flex items-center gap-2">
+                                <Server className="w-4 h-4 text-gray-600" />
+                                <h4 className="text-sm font-semibold text-gray-900">
+                                    Host Name: <span className="font-normal text-gray-700">{props.hostName || 'Not set'}</span>
+                                </h4>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <Wifi className="w-4 h-4 text-gray-600" />
+                                <h4 className="text-sm font-semibold text-gray-900">
+                                    Port Name: <span className="font-normal text-gray-700">{props.portName || 'Not set'}</span>
+                                </h4>
+                            </div>
+                        </div>
 
                         <div className="flex gap-2 justify-center">
-                            <button className="flex items-center justify-center space-x-2 px-3 py-1 mt-3 bg-green-400 hover:bg-green-500 rounded-md">
+                            <button
+                                onClick={() => setShowUpdateModal(true)}
+                                className="flex items-center justify-center space-x-2 px-4 py-2 bg-green-400 hover:bg-green-500 text-white rounded-md transition-colors"
+                            >
                                 Update
                             </button>
 
-                            <button className="flex items-center justify-center space-x-2 px-3 py-1 mt-3 bg-red-400 hover:bg-red-500  rounded-md">
+                            <button
+                                onClick={() => setShowDeleteModal(true)}
+                                className="flex items-center justify-center space-x-2 px-4 py-2 bg-red-400 hover:bg-red-500 text-white rounded-md transition-colors"
+                            >
                                 Delete
                             </button>
                         </div>
-
                     </div>
                 </div>
             </div>
+
+
+
+            {/* Update Modal --------------------------------------------------------------------*/}
+            {showUpdateModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+                        <div className="flex items-center justify-between p-6 border-b">
+                            <h2 className="text-lg font-semibold text-gray-900">Update Database Settings</h2>
+                            <button
+                                onClick={() => setShowUpdateModal(false)}
+                                className="text-gray-400 hover:text-gray-600 transition-colors"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        <div className="p-6">
+                            <div className="space-y-4">
+                                <div>
+                                    <div className="block text-sm font-medium text-gray-700 mb-1">
+                                        Database Name
+                                    </div>
+                                    <input
+                                        type="text"
+                                        name="databaseName"
+                                        value=""
+                                        onChange={(e) => { }}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        placeholder="Enter database name"
+                                    />
+                                </div>
+
+                                <div>
+                                    <div className="block text-sm font-medium text-gray-700 mb-1">
+                                        Host Name
+                                    </div>
+                                    <input
+                                        type="text"
+                                        name="hostName"
+                                        value=""
+                                        onChange={(e) => { }}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        placeholder="Enter host name"
+                                    />
+                                </div>
+
+                                <div>
+                                    <div className="block text-sm font-medium text-gray-700 mb-1">
+                                        Port Name
+                                    </div>
+                                    <input
+                                        type="text"
+                                        name="portName"
+                                        value=""
+                                        onChange={(e) => { }}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        placeholder="Enter port name"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="flex gap-3 mt-6">
+                                <button
+                                    onClick={() => setShowUpdateModal(false)}
+                                    className="flex-1 px-4 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={() => { }}
+                                    className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
+                                >
+                                    Update Settings
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+
+
+
+
+             {/* Delete Confirmation Modal --------------------------------------------------------------------*/}
+            {showDeleteModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl w-full max-w-sm">
+                        <div className="p-6">
+                            <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-100 rounded-full">
+                                <X className="w-6 h-6 text-red-600" />
+                            </div>
+                            
+                            <h2 className="text-lg font-semibold text-gray-900 text-center mb-2">
+                                Delete Database Setting
+                            </h2>
+                            
+                            <p className="text-gray-600 text-center mb-6">
+                                Are you sure you want to delete this database setting? This action cannot be undone.
+                            </p>
+
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => setShowDeleteModal(false)}
+                                    className="flex-1 px-4 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleDelete}
+                                    className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors"
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     )
 }

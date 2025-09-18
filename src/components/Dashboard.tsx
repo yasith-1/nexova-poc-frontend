@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import SettingCard from "./SettingCard";
 
 // Types
 type ExpandedSections = {
@@ -29,21 +30,21 @@ const Dashboard = () => {
         sms: false,
     });
 
-    // ---- Database Settings State ----
+    // ---- Database Settings State --------------
     const [dbHost, setDbHost] = useState("localhost");
     const [dbUsername, setDbUsername] = useState("admin");
     const [dbPort, setDbPort] = useState("5432");
     const [dbPassword, setDbPassword] = useState("");
     const [dbName, setDbName] = useState("myapp_db");
 
-    // ---- Email Settings State ----
+    // ---- Email Settings State --------------
     const [smtpHost, setSmtpHost] = useState("smtp.gmail.com");
     const [smtpPort, setSmtpPort] = useState("587");
     const [emailUsername, setEmailUsername] = useState("your-email@gmail.com");
     const [emailPassword, setEmailPassword] = useState("");
     const [fromEmail, setFromEmail] = useState("noreply@myapp.com");
 
-    // ---- SMS Settings State ----
+    // ---- SMS Settings State ---------------
     const [smsProvider, setSmsProvider] = useState("twilio");
     const [fromNumber, setFromNumber] = useState("+1234567890");
     const [apiKey, setApiKey] = useState("");
@@ -58,6 +59,7 @@ const Dashboard = () => {
 
     const handleSave = async (section: keyof ExpandedSections) => {
         let payload: any = {};
+
         if (section === "database") {
             payload = {
                 databaseName: dbName,
@@ -83,10 +85,10 @@ const Dashboard = () => {
             };
         }
 
+        // axioss POST database settings save-------------------------------------------------------
+
         try {
             const res = await axios.post('http://localhost:8080/api/database/setting/add', payload);
-            // console.log(`${section} settings saved`, res.data.message);
-            // alert(res.data.message);
             if (res.status == 200) {
                 toast.success(res.data.message);
             } else {
@@ -96,6 +98,8 @@ const Dashboard = () => {
             // alert(error ?.response?.data?.message || "An error occurred");
             toast.error(error?.response?.data?.message || "An error occurred");
         }
+        
+        //------------------------------------------------------------------------------------------
     };
 
     const handleCancel = (section: keyof ExpandedSections) => {
@@ -379,6 +383,7 @@ const Dashboard = () => {
 
                         <div className="divide-y divide-gray-100 flex flex-col gap-4 p-4">
                             {/* Placeholder for saved settings or tickets */}
+                            <SettingCard />
                         </div>
                     </div>
                 </div>
