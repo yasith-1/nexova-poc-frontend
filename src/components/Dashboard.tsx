@@ -56,7 +56,7 @@ const Dashboard = () => {
             console.log("Error fetching database settings:", error);
         }
 
-    }, [])
+    }, [databaseSettingList])
 
 
     const toggleSection = (section: keyof ExpandedSections) => {
@@ -94,7 +94,7 @@ const Dashboard = () => {
             };
         }
 
-        // axioss POST database settings save-------------------------------------------------------
+        // axioss POST (save) database settings save-------------------------------------------------------
 
         try {
             const res = await axios.post('http://localhost:8080/api/database/setting/add', payload);
@@ -384,7 +384,7 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    {/* ---------- Saved Settings / Tickets ---------- */}
+                    {/* ---------- Saved Settings ---------- */}
                     <div className="bg-white rounded-xl shadow-lg">
                         <div className="px-4 sm:px-6 py-4 border-b border-gray-100">
                             <h3 className="text-lg font-semibold text-gray-900">Saved Settings</h3>
@@ -392,6 +392,10 @@ const Dashboard = () => {
 
                         <div className="divide-y divide-gray-100 flex flex-col gap-4 p-4">
                             {/* Placeholder for saved settings or tickets */}
+
+                            {databaseSettingList.length === 0 && (
+                                <p className="text-sm text-gray-500">No saved settings available.</p>
+                            )}
 
                             {databaseSettingList.map((setting) => (
                                 <SettingCard
@@ -402,6 +406,7 @@ const Dashboard = () => {
                                     host={setting.host}
                                     port={setting.port}
                                 />
+
                             ))}
                         </div>
                     </div>
