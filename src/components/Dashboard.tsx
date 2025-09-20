@@ -56,7 +56,7 @@ const Dashboard = () => {
             console.log("Error fetching database settings:", error);
         }
 
-    }, [databaseSettingList])
+    }, [])
 
 
     const toggleSection = (section: keyof ExpandedSections) => {
@@ -141,6 +141,7 @@ const Dashboard = () => {
                     <div className="lg:col-span-2 space-y-6">
                         {/* ---------- Database Settings ---------- */}
                         <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+
                             <button
                                 onClick={() => toggleSection("database")}
                                 className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors duration-200 rounded-t-lg"
@@ -163,7 +164,7 @@ const Dashboard = () => {
                                             <label className="block text-sm font-medium text-gray-700">Database Name</label>
                                             <input
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                value={dbName}
+                                                // value={dbName}
                                                 onChange={(e: any) => setDbName(e.target.value)}
                                             />
                                         </div>
@@ -172,7 +173,7 @@ const Dashboard = () => {
                                             <label className="block text-sm font-medium text-gray-700">Username</label>
                                             <input
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                value={dbUsername}
+                                                // value={dbUsername}
                                                 onChange={(e: any) => setDbUsername(e.target.value)}
                                             />
                                         </div>
@@ -181,7 +182,7 @@ const Dashboard = () => {
                                             <label className="block text-sm font-medium text-gray-700">Host</label>
                                             <input
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                value={dbHost}
+                                                // value={dbHost}
                                                 onChange={(e: any) => setDbHost(e.target.value)}
                                             />
                                         </div>
@@ -190,7 +191,7 @@ const Dashboard = () => {
                                             <label className="block text-sm font-medium text-gray-700">Port</label>
                                             <input
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                value={dbPort}
+                                                // value={dbPort}
                                                 onChange={(e: any) => setDbPort(e.target.value)}
                                             />
                                         </div>
@@ -384,7 +385,7 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-                    {/* ---------- Saved Settings ---------- */}
+                    {/* ---------- Saved database Settings ---------- */}
                     <div className="bg-white rounded-xl shadow-lg">
                         <div className="px-4 sm:px-6 py-4 border-b border-gray-100">
                             <h3 className="text-lg font-semibold text-gray-900">Saved Settings</h3>

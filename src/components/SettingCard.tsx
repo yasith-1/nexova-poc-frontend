@@ -48,7 +48,7 @@ function SettingCard(props: any) {
 
     //PATCH API call to update database setting-------------------------------------------------
 
-    const updateDatabase = async (id: number) => {
+    const updateDatabaseSetting = async (id: number) => {
         try {
             await axios.patch('http://localhost:8080/api/database/setting/update', {
                 id: id,
@@ -66,12 +66,22 @@ function SettingCard(props: any) {
     };
     //-------------------------------------------------------------------------------------------
 
-    const handleDelete = () => {
-        // Handle delete logic here
-        console.log('Deleting database setting:', props.id);
+
+
+    //DELETE API call to update database setting-------------------------------------------------
+    const deleteDatabaseSetting = async (id: number) => {
+        // console.log('Deleting database setting:', props.id);
+        try {
+            await axios.delete(`http://localhost:8080/api/database/setting/remove/${id}`);
+            toast.success("Database setting deleted successfully");
+
+        } catch (error) {
+            toast.error("Failed to delete database setting: " + error);
+        }
         setShowDeleteModal(false);
-        // You can add props.onDelete(props.id) here to pass data to parent component
     };
+
+    //-------------------------------------------------------------------------------------------
 
     return (
         <>
@@ -123,6 +133,7 @@ function SettingCard(props: any) {
 
                             <button
                                 onClick={() => setShowDeleteModal(true)}
+                                // onClick={() => console.log(props.id)}
                                 className="flex items-center justify-center space-x-2 px-4 py-2 bg-red-400 hover:bg-red-500 text-black rounded-md transition-colors"
                             >
                                 Delete
@@ -230,7 +241,7 @@ function SettingCard(props: any) {
                                 </button>
 
                                 <button
-                                    onClick={() => { updateDatabase(foundedData.id) }}
+                                    onClick={() => { updateDatabaseSetting(foundedData.id) }}
                                     className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
                                 >
                                     Update Settings
@@ -270,7 +281,7 @@ function SettingCard(props: any) {
                                     Cancel
                                 </button>
                                 <button
-                                    onClick={handleDelete}
+                                    onClick={() => deleteDatabaseSetting(props.id)}
                                     className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors"
                                 >
                                     Delete

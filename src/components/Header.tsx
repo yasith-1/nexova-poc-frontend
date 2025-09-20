@@ -1,8 +1,6 @@
 import { User2 } from 'lucide-react'
 import React, { useState } from 'react'
-import { ImProfile } from 'react-icons/im'
 import { IoIosNotificationsOutline } from "react-icons/io"
-import { Link } from 'react-router-dom'
 
 const Header = () => {
   const [showMobileMenu, setShowMobileMenu] = useState(false)
@@ -11,7 +9,7 @@ const Header = () => {
   }
 
   return (
-    <nav className="bg-white  dark:bg-indigo-500">
+    <nav className="bg-white dark:bg-indigo-500">
       <div className="max-w-screen-xl mx-auto px-4 py-4 flex items-center justify-between">
         {/* Logo */}
         <a href="/admin" className="flex items-center space-x-3">
