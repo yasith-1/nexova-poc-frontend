@@ -18,7 +18,6 @@ function SettingCard(props: any) {
     });
 
     //Updated values----------------------------------------------------------------
-    // const [id, setID] = useState("");
     const [updatedDatabaseName, setUpdatedDatabaseName] = useState("");
     const [updatedUsername, setUpdatedUsername] = useState("");
     const [updatedHost, setUpdatedHost] = useState("");
@@ -27,7 +26,7 @@ function SettingCard(props: any) {
 
 
     //GET API call to get single database setting-------------------------------------------------
-    const findData = async (num: number) => {
+    const findOneSetting = async (num: number) => {
         try {
             const res = await axios.get(`http://localhost:8080/api/database/setting/get/${num}`);
             const data = res.data[0];
@@ -44,6 +43,8 @@ function SettingCard(props: any) {
             console.error(err);
         }
     };
+    //-------------------------------------------------------------------------------------------
+
 
     //PATCH API call to update database setting-------------------------------------------------
 
@@ -63,6 +64,7 @@ function SettingCard(props: any) {
             toast.error("Failed to update database setting" + error);
         }
     };
+    //-------------------------------------------------------------------------------------------
 
     const handleDelete = () => {
         // Handle delete logic here
@@ -112,8 +114,7 @@ function SettingCard(props: any) {
                             <button
                                 onClick={() => {
                                     setShowUpdateModal(true);
-                                    // alert(props.id);
-                                    findData(props.id);
+                                    findOneSetting(props.id);
                                 }}
                                 className="flex items-center justify-center space-x-2 px-4 py-2 bg-green-400 hover:bg-green-500 text-black rounded-md transition-colors"
                             >
