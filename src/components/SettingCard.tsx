@@ -1,5 +1,5 @@
 import { Database, Plug, Server, X } from "lucide-react"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -23,6 +23,7 @@ function SettingCard(props: any) {
     const [updatedHost, setUpdatedHost] = useState("");
     const [updatedPort, setUpdatedPort] = useState("");
     const [updatedPassword, setUpdatedPassword] = useState("");
+
 
 
     //GET API call to get single database setting-------------------------------------------------

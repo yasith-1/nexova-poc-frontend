@@ -11,8 +11,6 @@ type ExpandedSections = {
     sms: boolean;
 };
 
-
-
 const Setting = () => {
     const [expandedSections, setExpandedSections] = useState<ExpandedSections>({
         database: true,
@@ -21,11 +19,11 @@ const Setting = () => {
     });
 
     // ---- Database Settings State --------------
-    const [dbHost, setDbHost] = useState("localhost");
-    const [dbUsername, setDbUsername] = useState("admin");
-    const [dbPort, setDbPort] = useState("5432");
+    const [dbHost, setDbHost] = useState("");
+    const [dbUsername, setDbUsername] = useState("");
+    const [dbPort, setDbPort] = useState("");
     const [dbPassword, setDbPassword] = useState("");
-    const [dbName, setDbName] = useState("myapp_db");
+    const [dbName, setDbName] = useState("");
 
     const [databaseSettingList, setDatabaseSettingList] = useState<any[]>([]);
 
@@ -43,20 +41,18 @@ const Setting = () => {
     const [apiSecret, setApiSecret] = useState("");
 
 
-    useEffect(() => {
+    const fetchSavedDatabaseSettings = async () => {
         try {
-            const res = axios.get('http://localhost:8080/api/database/setting/get-all');
-            res.then((element) => {
-                // console.log(element.data);
-
-                setDatabaseSettingList(element.data);
-            });
-
+            const res = await axios.get('http://localhost:8080/api/database/setting/get-all');
+            setDatabaseSettingList(res.data);
         } catch (error) {
-            console.log("Error fetching database settings:", error);
+            console.error("Error fetching database settings:", error);
         }
+    };
 
-    }, [])
+    useEffect(() => {
+        fetchSavedDatabaseSettings();
+    }, []);
 
 
     const toggleSection = (section: keyof ExpandedSections) => {
@@ -94,12 +90,14 @@ const Setting = () => {
             };
         }
 
-        // axioss POST (save) database settings save-------------------------------------------------------
+        // axioss POST (save) database settings -------------------------------------------------------
 
         try {
             const res = await axios.post('http://localhost:8080/api/database/setting/add', payload);
             if (res.status == 200) {
                 toast.success(res.data.message);
+                fetchSavedDatabaseSettings();
+                handleClear("database");
             } else {
                 toast.error(res.data.message);
             }
@@ -111,7 +109,7 @@ const Setting = () => {
         //------------------------------------------------------------------------------------------
     };
 
-    const handleCancel = (section: keyof ExpandedSections) => {
+    const handleClear = (section: keyof ExpandedSections) => {
         if (section === "database") {
             setDbHost("");
             setDbUsername("");
@@ -164,7 +162,7 @@ const Setting = () => {
                                             <label className="block text-sm font-medium text-gray-700">Database Name</label>
                                             <input
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                // value={dbName}
+                                                value={dbName}
                                                 onChange={(e: any) => setDbName(e.target.value)}
                                             />
                                         </div>
@@ -173,7 +171,7 @@ const Setting = () => {
                                             <label className="block text-sm font-medium text-gray-700">Username</label>
                                             <input
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                // value={dbUsername}
+                                                value={dbUsername}
                                                 onChange={(e: any) => setDbUsername(e.target.value)}
                                             />
                                         </div>
@@ -182,7 +180,7 @@ const Setting = () => {
                                             <label className="block text-sm font-medium text-gray-700">Host</label>
                                             <input
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                // value={dbHost}
+                                                value={dbHost}
                                                 onChange={(e: any) => setDbHost(e.target.value)}
                                             />
                                         </div>
@@ -191,7 +189,7 @@ const Setting = () => {
                                             <label className="block text-sm font-medium text-gray-700">Port</label>
                                             <input
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                // value={dbPort}
+                                                value={dbPort}
                                                 onChange={(e: any) => setDbPort(e.target.value)}
                                             />
                                         </div>
@@ -215,7 +213,7 @@ const Setting = () => {
                                             <span>Save</span>
                                         </button>
                                         <button
-                                            onClick={() => handleCancel("database")}
+                                            onClick={() => handleClear("database")}
                                             className="flex items-center justify-center space-x-2 px-4 py-2 bg-white hover:bg-red-400 text-gray-700 border border-gray-300 rounded-md"
                                         >
                                             <X className="w-4 h-4" />
@@ -301,7 +299,7 @@ const Setting = () => {
                                             <span>Save</span>
                                         </button>
                                         <button
-                                            onClick={() => handleCancel("email")}
+                                            onClick={() => handleClear("email")}
                                             className="flex items-center justify-center space-x-2 px-4 py-2 bg-white hover:bg-red-400 text-gray-700 border border-gray-300 rounded-md"
                                         >
                                             <X className="w-4 h-4" />
@@ -381,7 +379,7 @@ const Setting = () => {
                                             <span>Save</span>
                                         </button>
                                         <button
-                                            onClick={() => handleCancel("sms")}
+                                            onClick={() => handleClear("sms")}
                                             className="flex items-center justify-center space-x-2 px-4 py-2 bg-white hover:bg-red-400 text-gray-700 border border-gray-300 rounded-md"
                                         >
                                             <X className="w-4 h-4" />
