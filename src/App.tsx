@@ -11,7 +11,6 @@ function App() {
       <BrowserRouter>
         <Toaster position="bottom-right" reverseOrder={false} />
         <Routes>
-          <Route path='/dashboard/*' element={<MainAdminDashboardContainer />} />
           <Route path='/*' element={<MainAdminDashboardContainer />} />
         </Routes>
       </BrowserRouter>

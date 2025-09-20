@@ -15,11 +15,9 @@ export function Sidebar() {
     setActiveItem(itemId);
 
     switch (itemId) {
-      case 'Database Setting': navigate('/dashboard');
+      case 'Database Setting': navigate('/setting');
         break;
-      case 'User Management': navigate('/user-management');
-        break;
-      case 'SMS Setting': navigate('/admin/create-ticket');
+      case 'User Management': navigate('/user');
         break;
     }
   };

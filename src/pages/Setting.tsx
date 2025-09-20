@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Database, Mail, MessageSquare, ChevronDown, Save, X } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import SettingCard from "./SettingCard";
+import SettingCard from "../components/SettingCard";
 
 // Types
 type ExpandedSections = {
@@ -13,7 +13,7 @@ type ExpandedSections = {
 
 
 
-const Dashboard = () => {
+const Setting = () => {
     const [expandedSections, setExpandedSections] = useState<ExpandedSections>({
         database: true,
         email: false,
@@ -47,7 +47,7 @@ const Dashboard = () => {
         try {
             const res = axios.get('http://localhost:8080/api/database/setting/get-all');
             res.then((element) => {
-                console.log(element.data);
+                // console.log(element.data);
 
                 setDatabaseSettingList(element.data);
             });
@@ -249,7 +249,8 @@ const Dashboard = () => {
                                             <label className="block text-sm font-medium text-gray-700">SMTP Host</label>
                                             <input
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                value={smtpHost}
+                                                // value={smtpHost}
+                                                placeholder="SMTP host"
                                                 onChange={(e: any) => setSmtpHost(e.target.value)}
                                             />
                                         </div>
@@ -257,7 +258,8 @@ const Dashboard = () => {
                                             <label className="block text-sm font-medium text-gray-700">SMTP Port</label>
                                             <input
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                value={smtpPort}
+                                                // value={smtpPort}
+                                                placeholder="SMTP port"
                                                 onChange={(e: any) => setSmtpPort(e.target.value)}
                                             />
                                         </div>
@@ -265,7 +267,8 @@ const Dashboard = () => {
                                             <label className="block text-sm font-medium text-gray-700">Username</label>
                                             <input
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                value={emailUsername}
+                                                // value={emailUsername}
+                                                placeholder="Email username"
                                                 onChange={(e: any) => setEmailUsername(e.target.value)}
                                             />
                                         </div>
@@ -274,7 +277,8 @@ const Dashboard = () => {
                                             <input
                                                 type="password"
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                value={emailPassword}
+                                                // value={emailPassword}
+                                                placeholder="Email password"
                                                 onChange={(e: any) => setEmailPassword(e.target.value)}
                                             />
                                         </div>
@@ -283,7 +287,8 @@ const Dashboard = () => {
                                         <label className="block text-sm font-medium text-gray-700">From Email</label>
                                         <input
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                            value={fromEmail}
+                                            // value={fromEmail}
+                                            placeholder="From email"
                                             onChange={(e: any) => setFromEmail(e.target.value)}
                                         />
                                     </div>
@@ -330,7 +335,7 @@ const Dashboard = () => {
                                             <label className="block text-sm font-medium text-gray-700">Provider</label>
                                             <select
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                value={smsProvider}
+                                                // value={smsProvider}
                                                 onChange={(e: any) => setSmsProvider(e.target.value)}
                                             >
                                                 <option value="twilio">Twilio</option>
@@ -342,7 +347,8 @@ const Dashboard = () => {
                                             <label className="block text-sm font-medium text-gray-700">From Number</label>
                                             <input
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                value={fromNumber}
+                                                // value={fromNumber}
+                                                placeholder="+1234567890"
                                                 onChange={(e: any) => setFromNumber(e.target.value)}
                                             />
                                         </div>
@@ -350,7 +356,8 @@ const Dashboard = () => {
                                             <label className="block text-sm font-medium text-gray-700">API Key</label>
                                             <input
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                value={apiKey}
+                                                placeholder="Api key"
+                                                // value={apiKey}
                                                 onChange={(e: any) => setApiKey(e.target.value)}
                                             />
                                         </div>
@@ -359,7 +366,8 @@ const Dashboard = () => {
                                             <input
                                                 type="password"
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                value={apiSecret}
+                                                placeholder="********"
+                                                // value={apiSecret}
                                                 onChange={(e: any) => setApiSecret(e.target.value)}
                                             />
                                         </div>
@@ -417,4 +425,4 @@ const Dashboard = () => {
     );
 };
 
-export default Dashboard;
+export default Setting;

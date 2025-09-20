@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../Header';
 import { Sidebar } from '../SideBar';
-import Dashboard from '../Dashboard';
 import { Route, Routes } from 'react-router-dom';
-import Role from '../../pages/Role';
+import UserManagement from '../../pages/UserManagement';
+import Setting from '../../pages/Setting';
 
 function MainAdminDashboardContainer() {
     // Check if screen is large (1024px+) on initial load
@@ -100,8 +100,8 @@ function MainAdminDashboardContainer() {
                 }`}>
                 <div className="p-5 min-h-full">
                     <Routes>
-                        <Route path="/*" element={<Dashboard />} />
-                        <Route path="/user-management" element={<Role />} />
+                        <Route path="/setting/*" element={<Setting />} />
+                        <Route path="/user/*" element={<UserManagement />} />
                     </Routes>
                 </div>
             </div>
