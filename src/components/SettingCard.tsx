@@ -51,15 +51,15 @@ function SettingCard(props: any) {
 
     const updateDatabaseSetting = async (id: number) => {
         try {
-            await axios.patch('http://localhost:8080/api/database/setting/update', {
+            const res = await axios.put('http://localhost:8080/api/database/setting/update', {
                 id: id,
                 databaseName: updatedDatabaseName,
                 username: updatedUsername,
                 host: updatedHost,
                 port: updatedPort,
                 password: updatedPassword
-            })
-            toast.success("Database setting updated successfully");
+            });
+            toast.success(res.data.message);
             setShowUpdateModal(false);
         } catch (error) {
             toast.error("Failed to update database setting" + error);
