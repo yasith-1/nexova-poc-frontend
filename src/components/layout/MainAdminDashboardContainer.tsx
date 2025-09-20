@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '../Header';
 import { Sidebar } from '../SideBar';
 import { Route, Routes } from 'react-router-dom';
@@ -100,7 +100,7 @@ function MainAdminDashboardContainer() {
                 }`}>
                 <div className="p-5 min-h-full">
                     <Routes>
-                        <Route path="/setting/*" element={<Setting />} />
+                        <Route path="/*" element={<Setting />} />
                         <Route path="/user/*" element={<UserManagement />} />
                     </Routes>
                 </div>

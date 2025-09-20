@@ -1,5 +1,5 @@
 import { User2 } from 'lucide-react'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { IoIosNotificationsOutline } from "react-icons/io"
 
 const Header = () => {
