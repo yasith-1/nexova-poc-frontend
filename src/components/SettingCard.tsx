@@ -47,7 +47,7 @@ function SettingCard(props: any) {
     //-------------------------------------------------------------------------------------------
 
 
-    //PATCH API call to update database setting-------------------------------------------------
+    //PUT API call to update database setting-------------------------------------------------
 
     const updateDatabaseSetting = async (id: number) => {
         try {
