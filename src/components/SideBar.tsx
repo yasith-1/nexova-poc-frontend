@@ -25,8 +25,8 @@ export function Sidebar() {
 
   return (
     <div className="w-[250px] bg-white text-gray-800 h-screen fixed left-0">
-      <div className="h-4" /> {/* optional spacer to maintain consistent layout */}
-      <div className="h-4" /> {/* optional spacer to maintain consistent layout */}
+      <div className="h-4" />
+      <div className="h-4" />
       <nav className="flex-1">
         {menuItems.map((item) => (
           <SidebarItem

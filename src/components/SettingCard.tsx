@@ -1,10 +1,18 @@
 import { Database, Plug, Server, X } from "lucide-react"
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
+interface settingCardProps {
+    key: number,
+    id: number,
+    databaseName: string,
+    username: string,
+    host: string,
+    port: number
+}
 
-function SettingCard(props: any) {
+function SettingCard(props: settingCardProps) {
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -134,7 +142,6 @@ function SettingCard(props: any) {
 
                             <button
                                 onClick={() => setShowDeleteModal(true)}
-                                // onClick={() => console.log(props.id)}
                                 className="flex items-center justify-center space-x-2 px-4 py-2 bg-red-400 hover:bg-red-500 text-black rounded-md transition-colors"
                             >
                                 Delete
