@@ -1,43 +1,44 @@
-import { Database, Plug, Server, X } from "lucide-react"
+import { Database, Plug, Server, X, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-interface settingCardProps {
-    key: number,
-    id: number,
-    databaseName: string,
-    username: string,
-    host: string,
-    port: number
+interface SettingCardProps {
+    id: number;
+    databaseName: string;
+    username: string;
+    host: string;
+    port: number;
 }
 
-function SettingCard(props: settingCardProps) {
+function SettingCard(props: SettingCardProps) {
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const [foundedData, setFoundedData] = useState({
         id: 0,
-        databaseName: '',
-        username: '',
-        host: '',
-        port: '',
-        password: ''
+        databaseName: "",
+        username: "",
+        host: "",
+        port: "",
+        password: "",
     });
 
-    //Updated values----------------------------------------------------------------
     const [updatedDatabaseName, setUpdatedDatabaseName] = useState("");
     const [updatedUsername, setUpdatedUsername] = useState("");
     const [updatedHost, setUpdatedHost] = useState("");
     const [updatedPort, setUpdatedPort] = useState("");
     const [updatedPassword, setUpdatedPassword] = useState("");
 
+    // 👁️‍🗨️ NEW: toggle for showing/hiding password
+    const [showPassword, setShowPassword] = useState(false);
 
-
-    //GET API call to get single database setting-------------------------------------------------
+    // Fetch single setting and prefill form
     const findOneSetting = async (num: number) => {
         try {
-            const res = await axios.get(`http://localhost:8080/api/database/setting/get/${num}`);
+            const res = await axios.get(
+                `http://localhost:8080/api/database/setting/get/${num}`
+            );
             const data = res.data[0];
             setFoundedData({
                 id: data.id,
@@ -45,65 +46,69 @@ function SettingCard(props: settingCardProps) {
                 username: data.username,
                 host: data.host,
                 port: data.port,
-                password: data.password
+                password: data.password,
             });
 
+            // pre-fill editable fields
+            setUpdatedDatabaseName(data.databaseName);
+            setUpdatedUsername(data.username);
+            setUpdatedHost(data.host);
+            setUpdatedPort(data.port.toString());
+            setUpdatedPassword(data.password);
         } catch (err) {
             console.error(err);
+            toast.error("Failed to load database setting");
         }
     };
-    //-------------------------------------------------------------------------------------------
 
-
-    //PUT API call to update database setting-------------------------------------------------
-
+    // Update
     const updateDatabaseSetting = async (id: number) => {
-        if (!updatedDatabaseName || !updatedUsername || !updatedHost || !updatedPort || !updatedPassword) {
-            // alert("Please fill in all required fields");
+        if (
+            !updatedDatabaseName ||
+            !updatedUsername ||
+            !updatedHost ||
+            !updatedPort ||
+            !updatedPassword
+        ) {
             toast.error("Please fill in all required fields");
             return;
         }
 
         try {
-            const res = await axios.put('http://localhost:8080/api/database/setting/update', {
-                id: id,
-                databaseName: updatedDatabaseName,
-                username: updatedUsername,
-                host: updatedHost,
-                port: updatedPort,
-                password: updatedPassword
-            });
-            toast.success(res.data.message);
+            const res = await axios.put(
+                "http://localhost:8080/api/database/setting/update",
+                {
+                    id,
+                    databaseName: updatedDatabaseName,
+                    username: updatedUsername,
+                    host: updatedHost,
+                    port: Number(updatedPort),
+                    password: updatedPassword,
+                }
+            );
+            toast.success(res.data.message || "Database setting updated");
             setShowUpdateModal(false);
-        } catch (error) {
-            toast.error("Failed to update database setting" + error);
+        } catch (error: any) {
+            toast.error("Failed to update database setting: " + error.message);
         }
     };
-    //-------------------------------------------------------------------------------------------
 
-
-
-    //DELETE API call to update database setting-------------------------------------------------
+    // Delete
     const deleteDatabaseSetting = async (id: number) => {
-        // console.log('Deleting database setting:', props.id);
         try {
-            await axios.delete(`http://localhost:8080/api/database/setting/remove/${id}`);
+            await axios.delete(
+                `http://localhost:8080/api/database/setting/remove/${id}`
+            );
             toast.success("Database setting deleted successfully");
-
-        } catch (error) {
-            toast.error("Failed to delete database setting: " + error);
+        } catch (error: any) {
+            toast.error("Failed to delete database setting: " + error.message);
         }
         setShowDeleteModal(false);
     };
 
-    //-------------------------------------------------------------------------------------------
-
     return (
         <>
-            <div
-                key={props.id}
-                className="p-4 sm:p-6 bg-[#E8F1FF] hover:bg-blue-50 transition-colors rounded-2xl"
-            >
+            <div className="p-4 sm:p-6 bg-[#E8F1FF] hover:bg-blue-50 transition-colors rounded-2xl">
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center space-x-3 mb-2">
@@ -116,21 +121,30 @@ function SettingCard(props: settingCardProps) {
                             <div className="flex items-center gap-2">
                                 <Database className="w-4 h-4 text-gray-600" />
                                 <h4 className="text-sm font-semibold text-gray-900">
-                                    Database Name: <span className="font-normal text-gray-700">{props.databaseName || 'Not set'}</span>
+                                    Database Name:{" "}
+                                    <span className="font-normal text-gray-700">
+                                        {props.databaseName || "Not set"}
+                                    </span>
                                 </h4>
                             </div>
 
                             <div className="flex items-center gap-2">
                                 <Server className="w-4 h-4 text-gray-600" />
                                 <h4 className="text-sm font-semibold text-gray-900">
-                                    Host Name: <span className="font-normal text-gray-700">{props.host || 'Not set'}</span>
+                                    Host Name:{" "}
+                                    <span className="font-normal text-gray-700">
+                                        {props.host || "Not set"}
+                                    </span>
                                 </h4>
                             </div>
 
                             <div className="flex items-center gap-2">
                                 <Plug className="w-4 h-4 text-gray-600" />
                                 <h4 className="text-sm font-semibold text-gray-900">
-                                    Port Name: <span className="font-normal text-gray-700">{props.port || 'Not set'}</span>
+                                    Port Number:{" "}
+                                    <span className="font-normal text-gray-700">
+                                        {props.port || "Not set"}
+                                    </span>
                                 </h4>
                             </div>
                         </div>
@@ -157,14 +171,14 @@ function SettingCard(props: settingCardProps) {
                 </div>
             </div>
 
-
-
-            {/* Update Modal --------------------------------------------------------------------*/}
+            {/* ---------- Update Modal ---------- */}
             {showUpdateModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
                         <div className="flex items-center justify-between p-6 border-b">
-                            <h2 className="text-lg font-semibold text-gray-900">Update Database Settings</h2>
+                            <h2 className="text-lg font-semibold text-gray-900">
+                                Update Database Settings
+                            </h2>
                             <button
                                 onClick={() => setShowUpdateModal(false)}
                                 className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -173,85 +187,78 @@ function SettingCard(props: settingCardProps) {
                             </button>
                         </div>
 
-                        <div className="p-6">
-                            <div className="space-y-4">
-                                <div>
-                                    <div className="block text-sm font-medium text-gray-700 mb-1">
-                                        Database Name
-                                        <span className="text-red-500"> * </span>
-                                    </div>
-                                    <input
-                                        type="text"
-                                        required
-                                        name="databaseName"
-                                        // value={foundedData.databaseName}
-                                        onChange={(e) => { setUpdatedDatabaseName(e.target.value) }}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                        placeholder={foundedData.databaseName}
-                                    />
-                                </div>
+                        <div className="p-6 space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Database Name<span className="text-red-500"> *</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    value={updatedDatabaseName}
+                                    onChange={(e) => setUpdatedDatabaseName(e.target.value)}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                />
+                            </div>
 
-                                <div>
-                                    <div className="block text-sm font-medium text-gray-700 mb-1">
-                                        UserName
-                                        <span className="text-red-500"> * </span>
-                                    </div>
-                                    <input
-                                        type="text"
-                                        required
-                                        name="username"
-                                        // value={foundedData.databaseName}
-                                        onChange={(e) => { setUpdatedUsername(e.target.value) }}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                        placeholder={foundedData.username}
-                                    />
-                                </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Username<span className="text-red-500"> *</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    value={updatedUsername}
+                                    onChange={(e) => setUpdatedUsername(e.target.value)}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                />
+                            </div>
 
-                                <div>
-                                    <div className="block text-sm font-medium text-gray-700 mb-1">
-                                        Host Name
-                                        <span className="text-red-500"> * </span>
-                                    </div>
-                                    <input
-                                        type="text"
-                                        required
-                                        name="hostName"
-                                        // value={foundedData.host}
-                                        onChange={(e) => { setUpdatedHost(e.target.value) }}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                        placeholder={foundedData.host}
-                                    />
-                                </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Host Name<span className="text-red-500"> *</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    value={updatedHost}
+                                    onChange={(e) => setUpdatedHost(e.target.value)}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                />
+                            </div>
 
-                                <div>
-                                    <div className="block text-sm font-medium text-gray-700 mb-1">
-                                        Port Number
-                                        <span className="text-red-500"> * </span>
-                                    </div>
-                                    <input
-                                        type="number"
-                                        required
-                                        name="portName"
-                                        // value={foundedData.port}
-                                        onChange={(e) => { setUpdatedPort(e.target.value) }}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                        placeholder={foundedData.port}
-                                    />
-                                </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Port Number<span className="text-red-500"> *</span>
+                                </label>
+                                <input
+                                    type="number"
+                                    value={updatedPort}
+                                    onChange={(e) => setUpdatedPort(e.target.value)}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                />
+                            </div>
 
-                                <div>
-                                    <div className="block text-sm font-medium text-gray-700 mb-1">
-                                        Password
-                                        <span className="text-red-500"> * </span>
-                                    </div>
+                            {/* ✅ PASSWORD FIELD WITH SHOW/HIDE TOGGLE */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Password<span className="text-red-500"> *</span>
+                                </label>
+                                <div className="relative">
                                     <input
-                                        type="password"
-                                        required
-                                        name="Password"
-                                        // value={foundedData.password}
-                                        onChange={(e) => { setUpdatedPassword(e.target.value) }}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        type={showPassword ? "text" : "password"}
+                                        value={updatedPassword}
+                                        onChange={(e) => setUpdatedPassword(e.target.value)}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword((prev) => !prev)}
+                                        className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-gray-700"
+                                    >
+                                        {showPassword ? (
+                                            <EyeOff className="w-5 h-5" />
+                                        ) : (
+                                            <Eye className="w-5 h-5" />
+                                        )}
+                                    </button>
                                 </div>
                             </div>
 
@@ -264,7 +271,7 @@ function SettingCard(props: settingCardProps) {
                                 </button>
 
                                 <button
-                                    onClick={() => { updateDatabaseSetting(foundedData.id) }}
+                                    onClick={() => updateDatabaseSetting(foundedData.id)}
                                     className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
                                 >
                                     Update Settings
@@ -275,11 +282,7 @@ function SettingCard(props: settingCardProps) {
                 </div>
             )}
 
-
-
-
-
-            {/* Delete Confirmation Modal --------------------------------------------------------------------*/}
+            {/* ---------- Delete Confirmation Modal ---------- */}
             {showDeleteModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-lg shadow-xl w-full max-w-sm">
@@ -315,7 +318,7 @@ function SettingCard(props: settingCardProps) {
                 </div>
             )}
         </>
-    )
+    );
 }
 
-export default SettingCard
+export default SettingCard;
