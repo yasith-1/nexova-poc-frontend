@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Database, Mail, MessageSquare, ChevronDown, Save, X } from "lucide-react";
+import { Database, Mail, MessageSquare, ChevronDown, Save, X, Eye, EyeOff } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import SettingCard from "../components/SettingCard";
@@ -40,6 +40,7 @@ const Setting = () => {
     const [apiKey, setApiKey] = useState("");
     const [apiSecret, setApiSecret] = useState("");
 
+    const [showPassword, setShowPassword] = useState(false);
 
     const fetchSavedDatabaseSettings = async () => {
         try {
@@ -63,9 +64,17 @@ const Setting = () => {
     };
 
     const handleSave = async (section: keyof ExpandedSections) => {
+
         let payload: any = {};
 
         if (section === "database") {
+
+            if (!dbName || !dbUsername || !dbHost || !dbPort || !dbPassword) {
+                // alert("Please fill in all required fields");
+                toast.error("Please fill in all required fields");
+                return;
+            }
+
             payload = {
                 databaseName: dbName,
                 username: dbUsername,
@@ -159,8 +168,9 @@ const Setting = () => {
                                     <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700">Database Name</label>
+                                            <label className="block text-sm font-medium text-gray-700">Database Name <span className="text-red-500">*</span></label>
                                             <input
+                                                type="text"
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
                                                 value={dbName}
                                                 onChange={(e: any) => setDbName(e.target.value)}
@@ -168,8 +178,10 @@ const Setting = () => {
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700">Username</label>
+                                            <label className="block text-sm font-medium text-gray-700">Username <span className="text-red-500">*</span></label>
                                             <input
+                                                type="text"
+                                                required
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
                                                 value={dbUsername}
                                                 onChange={(e: any) => setDbUsername(e.target.value)}
@@ -177,8 +189,10 @@ const Setting = () => {
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700">Host</label>
+                                            <label className="block text-sm font-medium text-gray-700">Host <span className="text-red-500">*</span></label>
                                             <input
+                                                type="text"
+                                                required
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
                                                 value={dbHost}
                                                 onChange={(e: any) => setDbHost(e.target.value)}
@@ -186,22 +200,40 @@ const Setting = () => {
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700">Port</label>
+                                            <label className="block text-sm font-medium text-gray-700">Port <span className="text-red-500">*</span></label>
                                             <input
+                                                type="number"
+                                                required
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
                                                 value={dbPort}
                                                 onChange={(e: any) => setDbPort(e.target.value)}
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700">Password</label>
-                                            <input
-                                                type="password"
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                                                value={dbPassword}
-                                                onChange={(e: any) => setDbPassword(e.target.value)}
-                                            />
+                                            <label className="block text-sm font-medium text-gray-700">
+                                                Password <span className="text-red-500">*</span>
+                                            </label>
+
+                                            <div className="relative mt-1">
+                                                <input
+                                                    type={showPassword ? "text" : "password"}
+                                                    required
+                                                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md"
+                                                    value={dbPassword}
+                                                    onChange={(e: any) => setDbPassword(e.target.value)}
+                                                />
+
+                                                {/* Eye toggle button */}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+                                                >
+                                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                                </button>
+                                            </div>
                                         </div>
+
                                     </div>
 
                                     <div className="flex flex-col sm:flex-row gap-3 pt-6">
@@ -244,7 +276,7 @@ const Setting = () => {
                                 <div className="px-4 pb-4 border-t border-gray-100">
                                     <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700">SMTP Host</label>
+                                            <label className="block text-sm font-medium text-gray-700">SMTP Host <span className="text-red-500">*</span></label>
                                             <input
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
                                                 // value={smtpHost}
@@ -253,8 +285,9 @@ const Setting = () => {
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700">SMTP Port</label>
+                                            <label className="block text-sm font-medium text-gray-700">SMTP Port <span className="text-red-500">*</span></label>
                                             <input
+                                                type="number"
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
                                                 // value={smtpPort}
                                                 placeholder="SMTP port"
@@ -262,7 +295,7 @@ const Setting = () => {
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700">Username</label>
+                                            <label className="block text-sm font-medium text-gray-700">Username <span className="text-red-500">*</span></label>
                                             <input
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
                                                 // value={emailUsername}
@@ -271,7 +304,7 @@ const Setting = () => {
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700">Password</label>
+                                            <label className="block text-sm font-medium text-gray-700">Password <span className="text-red-500">*</span></label>
                                             <input
                                                 type="password"
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
@@ -282,8 +315,9 @@ const Setting = () => {
                                         </div>
                                     </div>
                                     <div className="mt-4">
-                                        <label className="block text-sm font-medium text-gray-700">From Email</label>
+                                        <label className="block text-sm font-medium text-gray-700">From Email <span className="text-red-500">*</span></label>
                                         <input
+                                            type="email"
                                             className="w-full px-3 py-2 border border-gray-300 rounded-md"
                                             // value={fromEmail}
                                             placeholder="From email"
@@ -404,7 +438,7 @@ const Setting = () => {
                                 <p className="text-sm text-gray-500">No saved settings available.</p>
                             )}
 
-                            {databaseSettingList.map((setting) => (
+                            {databaseSettingList.map((setting, index) => (
                                 <SettingCard
                                     key={setting.id}
                                     id={setting.id}

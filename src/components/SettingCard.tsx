@@ -58,6 +58,12 @@ function SettingCard(props: settingCardProps) {
     //PUT API call to update database setting-------------------------------------------------
 
     const updateDatabaseSetting = async (id: number) => {
+        if (!updatedDatabaseName || !updatedUsername || !updatedHost || !updatedPort || !updatedPassword) {
+            // alert("Please fill in all required fields");
+            toast.error("Please fill in all required fields");
+            return;
+        }
+
         try {
             const res = await axios.put('http://localhost:8080/api/database/setting/update', {
                 id: id,
@@ -172,9 +178,11 @@ function SettingCard(props: settingCardProps) {
                                 <div>
                                     <div className="block text-sm font-medium text-gray-700 mb-1">
                                         Database Name
+                                        <span className="text-red-500"> * </span>
                                     </div>
                                     <input
                                         type="text"
+                                        required
                                         name="databaseName"
                                         // value={foundedData.databaseName}
                                         onChange={(e) => { setUpdatedDatabaseName(e.target.value) }}
@@ -186,9 +194,11 @@ function SettingCard(props: settingCardProps) {
                                 <div>
                                     <div className="block text-sm font-medium text-gray-700 mb-1">
                                         UserName
+                                        <span className="text-red-500"> * </span>
                                     </div>
                                     <input
                                         type="text"
+                                        required
                                         name="username"
                                         // value={foundedData.databaseName}
                                         onChange={(e) => { setUpdatedUsername(e.target.value) }}
@@ -200,9 +210,11 @@ function SettingCard(props: settingCardProps) {
                                 <div>
                                     <div className="block text-sm font-medium text-gray-700 mb-1">
                                         Host Name
+                                        <span className="text-red-500"> * </span>
                                     </div>
                                     <input
                                         type="text"
+                                        required
                                         name="hostName"
                                         // value={foundedData.host}
                                         onChange={(e) => { setUpdatedHost(e.target.value) }}
@@ -214,9 +226,11 @@ function SettingCard(props: settingCardProps) {
                                 <div>
                                     <div className="block text-sm font-medium text-gray-700 mb-1">
                                         Port Number
+                                        <span className="text-red-500"> * </span>
                                     </div>
                                     <input
-                                        type="text"
+                                        type="number"
+                                        required
                                         name="portName"
                                         // value={foundedData.port}
                                         onChange={(e) => { setUpdatedPort(e.target.value) }}
@@ -228,14 +242,15 @@ function SettingCard(props: settingCardProps) {
                                 <div>
                                     <div className="block text-sm font-medium text-gray-700 mb-1">
                                         Password
+                                        <span className="text-red-500"> * </span>
                                     </div>
                                     <input
-                                        type="text"
+                                        type="password"
+                                        required
                                         name="Password"
                                         // value={foundedData.password}
                                         onChange={(e) => { setUpdatedPassword(e.target.value) }}
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                        placeholder={foundedData.password}
                                     />
                                 </div>
                             </div>
