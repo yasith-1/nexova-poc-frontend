@@ -4,6 +4,10 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import SettingCard from "../components/SettingCard";
 
+// base url from .env file
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+
 // Types
 type ExpandedSections = {
     database: boolean;
@@ -44,7 +48,7 @@ const Setting = () => {
 
     const fetchSavedDatabaseSettings = async () => {
         try {
-            const res = await axios.get('http://localhost:8080/api/database/setting/get-all');
+            const res = await axios.get(`${BASE_URL}/get-all`);
             setDatabaseSettingList(res.data);
         } catch (error) {
             console.error("Error fetching database settings:", error);
@@ -102,7 +106,7 @@ const Setting = () => {
         // axioss POST (save) database settings -------------------------------------------------------
 
         try {
-            const res = await axios.post('http://localhost:8080/api/database/setting/add', payload);
+            const res = await axios.post(`${BASE_URL}/add`, payload);
             if (res.status == 200) {
                 toast.success(res.data.message);
                 fetchSavedDatabaseSettings();

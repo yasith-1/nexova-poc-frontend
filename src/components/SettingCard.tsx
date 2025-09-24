@@ -3,6 +3,9 @@ import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
+// base url from .env file
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 interface SettingCardProps {
     id: number;
     databaseName: string;
@@ -36,9 +39,7 @@ function SettingCard(props: SettingCardProps) {
     // Fetch single setting and prefill form
     const findOneSetting = async (num: number) => {
         try {
-            const res = await axios.get(
-                `http://localhost:8080/api/database/setting/get/${num}`
-            );
+            const res = await axios.get(`${BASE_URL}/get/${num}`);
             const data = res.data[0];
             setFoundedData({
                 id: data.id,
@@ -75,8 +76,7 @@ function SettingCard(props: SettingCardProps) {
         }
 
         try {
-            const res = await axios.put(
-                "http://localhost:8080/api/database/setting/update",
+            const res = await axios.put(`${BASE_URL}/update`,
                 {
                     id,
                     databaseName: updatedDatabaseName,
@@ -96,9 +96,7 @@ function SettingCard(props: SettingCardProps) {
     // Delete
     const deleteDatabaseSetting = async (id: number) => {
         try {
-            await axios.delete(
-                `http://localhost:8080/api/database/setting/remove/${id}`
-            );
+            await axios.delete(`${BASE_URL}/remove/${id}`);
             toast.success("Database setting deleted successfully");
         } catch (error: any) {
             toast.error("Failed to delete database setting: " + error.message);

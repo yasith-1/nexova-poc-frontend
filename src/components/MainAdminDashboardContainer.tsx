@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import Header from '../Header';
-import { Sidebar } from '../SideBar';
+import Header from './Header';
+import { Sidebar } from './SideBar';
 import { Route, Routes } from 'react-router-dom';
-import UserManagement from '../../pages/UserManagement';
-import Setting from '../../pages/Setting';
+import UserManagement from '../pages/UserManagement';
+import Setting from '../pages/Setting';
 
 function MainAdminDashboardContainer() {
     // Check if screen is large (1024px+) on initial load
