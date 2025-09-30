@@ -189,6 +189,7 @@ const Setting = () => {
             };
         }
 
+        // save data
         try {
             const res = await axios.post(`${BASE_URL}/add`, payload);
             if (res.status === 200) {

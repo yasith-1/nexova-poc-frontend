@@ -33,10 +33,10 @@ function SettingCard(props: SettingCardProps) {
     const [updatedPort, setUpdatedPort] = useState("");
     const [updatedPassword, setUpdatedPassword] = useState("");
 
-    // 👁️‍🗨️ NEW: toggle for showing/hiding password
+    // toggle for showing/hiding password
     const [showPassword, setShowPassword] = useState(false);
 
-    // Fetch single setting and prefill form
+    // Get by one
     const findOneSetting = async (num: number) => {
         try {
             const res = await axios.get(`${BASE_URL}/get/${num}`);
@@ -93,7 +93,7 @@ function SettingCard(props: SettingCardProps) {
         }
     };
 
-    // Delete
+    // Delete data
     const deleteDatabaseSetting = async (id: number) => {
         try {
             await axios.delete(`${BASE_URL}/remove/${id}`);
