@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Database, Mail, MessageSquare, ChevronDown, Save, X, Eye, EyeOff } from "lucide-react";
+import { Database, Mail, MessageSquare, ChevronDown, Save, X, Eye, EyeOff, ChevronLeft, ChevronRight } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import SettingCard from "../components/SettingCard";
@@ -12,9 +12,17 @@ type ExpandedSections = {
     sms: boolean;
 };
 
+type SavedSections = {
+    database: boolean;
+    email: boolean;
+    sms: boolean;
+};
+
 type ValidationErrors = {
     [key: string]: string;
 };
+
+const ITEMS_PER_PAGE = 2;
 
 const Setting = () => {
     const [expandedSections, setExpandedSections] = useState<ExpandedSections>({
@@ -22,6 +30,17 @@ const Setting = () => {
         email: false,
         sms: false,
     });
+
+    const [expandedSavedSections, setExpandedSavedSections] = useState<SavedSections>({
+        database: true,
+        email: false,
+        sms: false,
+    });
+
+    // Pagination states
+    const [dbPage, setDbPage] = useState(0);
+    const [emailPage, setEmailPage] = useState(0);
+    const [smsPage, setSmsPage] = useState(0);
 
     // Database Settings State
     const [dbHost, setDbHost] = useState("");
@@ -37,12 +56,14 @@ const Setting = () => {
     const [emailUsername, setEmailUsername] = useState("");
     const [emailPassword, setEmailPassword] = useState("");
     const [fromEmail, setFromEmail] = useState("");
+    const [emailSettingList, setEmailSettingList] = useState<any[]>([]);
 
     // SMS Settings State
     const [smsProvider, setSmsProvider] = useState("twilio");
     const [fromNumber, setFromNumber] = useState("");
     const [apiKey, setApiKey] = useState("");
     const [apiSecret, setApiSecret] = useState("");
+    const [smsSettingList, setSmsSettingList] = useState<any[]>([]);
 
     const [showPassword, setShowPassword] = useState(false);
     const [showEmailPassword, setShowEmailPassword] = useState(false);
@@ -62,8 +83,28 @@ const Setting = () => {
         }
     };
 
+    const fetchSavedEmailSettings = async () => {
+        try {
+            const res = await axios.get(`${BASE_URL}/get-all-email`);
+            setEmailSettingList(res.data);
+        } catch (error) {
+            console.error("Error fetching email settings:", error);
+        }
+    };
+
+    const fetchSavedSmsSettings = async () => {
+        try {
+            const res = await axios.get(`${BASE_URL}/get-all-sms`);
+            setSmsSettingList(res.data);
+        } catch (error) {
+            console.error("Error fetching SMS settings:", error);
+        }
+    };
+
     useEffect(() => {
         fetchSavedDatabaseSettings();
+        fetchSavedEmailSettings();
+        fetchSavedSmsSettings();
     }, []);
 
     const toggleSection = (section: keyof ExpandedSections) => {
@@ -71,6 +112,23 @@ const Setting = () => {
             ...prev,
             [section]: !prev[section],
         }));
+    };
+
+    const toggleSavedSection = (section: keyof SavedSections) => {
+        setExpandedSavedSections((prev) => ({
+            ...prev,
+            [section]: !prev[section],
+        }));
+    };
+
+    // Pagination helpers
+    const getPaginatedItems = (items: any[], page: number) => {
+        const start = page * ITEMS_PER_PAGE;
+        return items.slice(start, start + ITEMS_PER_PAGE);
+    };
+
+    const getTotalPages = (items: any[]) => {
+        return Math.ceil(items.length / ITEMS_PER_PAGE);
     };
 
     // Validation Functions
@@ -191,11 +249,16 @@ const Setting = () => {
 
         // save data
         try {
-            const res = await axios.post(`${BASE_URL}/add`, payload);
+            const endpoint = section === "database" ? "/add" : section === "email" ? "/add-email" : "/add-sms";
+            const res = await axios.post(`${BASE_URL}${endpoint}`, payload);
             if (res.status === 200) {
                 toast.success(res.data.message);
                 if (section === "database") {
                     fetchSavedDatabaseSettings();
+                } else if (section === "email") {
+                    fetchSavedEmailSettings();
+                } else if (section === "sms") {
+                    fetchSavedSmsSettings();
                 }
                 handleClear(section);
             } else {
@@ -287,6 +350,39 @@ const Setting = () => {
                 setSmsErrors(prev => ({ ...prev, [field]: error }));
                 break;
         }
+    };
+
+    const renderPaginationControls = (
+        items: any[],
+        currentPage: number,
+        setPage: (page: number) => void
+    ) => {
+        const totalPages = getTotalPages(items);
+        if (totalPages <= 1) return null;
+
+        return (
+            <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+                <button
+                    onClick={() => setPage(Math.max(0, currentPage - 1))}
+                    disabled={currentPage === 0}
+                    className="flex items-center space-x-1 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                    <ChevronLeft className="w-4 h-4" />
+                    <span>Previous</span>
+                </button>
+                <span className="text-sm text-gray-600">
+                    Page {currentPage + 1} of {totalPages}
+                </span>
+                <button
+                    onClick={() => setPage(Math.min(totalPages - 1, currentPage + 1))}
+                    disabled={currentPage >= totalPages - 1}
+                    className="flex items-center space-x-1 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                    <span>Next</span>
+                    <ChevronRight className="w-4 h-4" />
+                </button>
+            </div>
+        );
     };
 
     return (
@@ -680,27 +776,155 @@ const Setting = () => {
                         </div>
                     </div>
 
-                    {/* Saved Database Settings */}
-                    <div className="bg-white rounded-xl shadow-lg">
-                        <div className="px-4 sm:px-6 py-4 border-b border-gray-100">
-                            <h3 className="text-lg font-semibold text-gray-900">Saved Settings</h3>
+                    {/* Saved Settings Panel */}
+                    <div className="space-y-6">
+                        {/* Saved Database Settings */}
+                        <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+                            <button
+                                onClick={() => toggleSavedSection("database")}
+                                className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors duration-200"
+                            >
+                                <div className="flex items-center space-x-3">
+                                    <Database className="w-5 h-5 text-blue-500" />
+                                    <h3 className="text-lg font-medium text-gray-900">
+                                        Saved Database Settings
+                                        <span className="ml-2 text-sm text-gray-500">({databaseSettingList.length})</span>
+                                    </h3>
+                                </div>
+                                <ChevronDown
+                                    className={`w-5 h-5 text-gray-400 transform transition-transform duration-200 ${expandedSavedSections.database ? "rotate-180" : ""}`}
+                                />
+                            </button>
+
+                            {expandedSavedSections.database && (
+                                <div className="border-t border-gray-100">
+                                    <div className="p-4 space-y-4">
+                                        {databaseSettingList.length === 0 ? (
+                                            <p className="text-sm text-gray-500 text-center py-4">No saved settings available.</p>
+                                        ) : (
+                                            <>
+                                                {getPaginatedItems(databaseSettingList, dbPage).map((setting) => (
+                                                    <SettingCard
+                                                        key={setting.id}
+                                                        id={setting.id}
+                                                        databaseName={setting.databaseName}
+                                                        username={setting.username}
+                                                        host={setting.host}
+                                                        port={setting.port}
+                                                    />
+                                                ))}
+                                                {renderPaginationControls(databaseSettingList, dbPage, setDbPage)}
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
-                        <div className="divide-y divide-gray-100 flex flex-col gap-4 p-4">
-                            {databaseSettingList.length === 0 && (
-                                <p className="text-sm text-gray-500">No saved settings available.</p>
-                            )}
-
-                            {databaseSettingList.map((setting) => (
-                                <SettingCard
-                                    key={setting.id}
-                                    id={setting.id}
-                                    databaseName={setting.databaseName}
-                                    username={setting.username}
-                                    host={setting.host}
-                                    port={setting.port}
+                        {/* Saved Email Settings */}
+                        <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+                            <button
+                                onClick={() => toggleSavedSection("email")}
+                                className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors duration-200"
+                            >
+                                <div className="flex items-center space-x-3">
+                                    <Mail className="w-5 h-5 text-blue-500" />
+                                    <h3 className="text-lg font-medium text-gray-900">
+                                        Saved Email Settings
+                                        <span className="ml-2 text-sm text-gray-500">({emailSettingList.length})</span>
+                                    </h3>
+                                </div>
+                                <ChevronDown
+                                    className={`w-5 h-5 text-gray-400 transform transition-transform duration-200 ${expandedSavedSections.email ? "rotate-180" : ""}`}
                                 />
-                            ))}
+                            </button>
+
+                            {expandedSavedSections.email && (
+                                <div className="border-t border-gray-100">
+                                    <div className="p-4 space-y-4">
+                                        {emailSettingList.length === 0 ? (
+                                            <p className="text-sm text-gray-500 text-center py-4">No saved settings available.</p>
+                                        ) : (
+                                            <>
+                                                {getPaginatedItems(emailSettingList, emailPage).map((setting) => (
+                                                    <div key={setting.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                                        <div className="grid grid-cols-2 gap-2 text-sm">
+                                                            <div>
+                                                                <span className="font-medium text-gray-700">SMTP Host:</span>
+                                                                <p className="text-gray-600">{setting.smtpHost}</p>
+                                                            </div>
+                                                            <div>
+                                                                <span className="font-medium text-gray-700">Port:</span>
+                                                                <p className="text-gray-600">{setting.smtpPort}</p>
+                                                            </div>
+                                                            <div>
+                                                                <span className="font-medium text-gray-700">Username:</span>
+                                                                <p className="text-gray-600">{setting.username}</p>
+                                                            </div>
+                                                            <div>
+                                                                <span className="font-medium text-gray-700">From Email:</span>
+                                                                <p className="text-gray-600">{setting.fromEmail}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                                {renderPaginationControls(emailSettingList, emailPage, setEmailPage)}
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Saved SMS Settings */}
+                        <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+                            <button
+                                onClick={() => toggleSavedSection("sms")}
+                                className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors duration-200"
+                            >
+                                <div className="flex items-center space-x-3">
+                                    <MessageSquare className="w-5 h-5 text-blue-500" />
+                                    <h3 className="text-lg font-medium text-gray-900">
+                                        Saved SMS Settings
+                                        <span className="ml-2 text-sm text-gray-500">({smsSettingList.length})</span>
+                                    </h3>
+                                </div>
+                                <ChevronDown
+                                    className={`w-5 h-5 text-gray-400 transform transition-transform duration-200 ${expandedSavedSections.sms ? "rotate-180" : ""}`}
+                                />
+                            </button>
+
+                            {expandedSavedSections.sms && (
+                                <div className="border-t border-gray-100">
+                                    <div className="p-4 space-y-4">
+                                        {smsSettingList.length === 0 ? (
+                                            <p className="text-sm text-gray-500 text-center py-4">No saved settings available.</p>
+                                        ) : (
+                                            <>
+                                                {getPaginatedItems(smsSettingList, smsPage).map((setting) => (
+                                                    <div key={setting.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                                        <div className="grid grid-cols-2 gap-2 text-sm">
+                                                            <div>
+                                                                <span className="font-medium text-gray-700">Provider:</span>
+                                                                <p className="text-gray-600 capitalize">{setting.provider}</p>
+                                                            </div>
+                                                            <div>
+                                                                <span className="font-medium text-gray-700">From Number:</span>
+                                                                <p className="text-gray-600">{setting.fromNumber}</p>
+                                                            </div>
+                                                            <div className="col-span-2">
+                                                                <span className="font-medium text-gray-700">API Key:</span>
+                                                                <p className="text-gray-600 truncate">{setting.apiKey}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                                {renderPaginationControls(smsSettingList, smsPage, setSmsPage)}
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
