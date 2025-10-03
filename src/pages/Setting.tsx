@@ -165,6 +165,8 @@ const Setting = () => {
         return "";
     };
 
+    // Validate database form
+
     const validateDatabaseForm = (): boolean => {
         const errors: ValidationErrors = {};
 
@@ -178,6 +180,8 @@ const Setting = () => {
         return !Object.values(errors).some(error => error !== "");
     };
 
+    // Validate email form
+
     const validateEmailForm = (): boolean => {
         const errors: ValidationErrors = {};
 
@@ -190,6 +194,9 @@ const Setting = () => {
         setEmailErrors(errors);
         return !Object.values(errors).some(error => error !== "");
     };
+
+    // Validate sms form
+
 
     const validateSmsForm = (): boolean => {
         const errors: ValidationErrors = {};
